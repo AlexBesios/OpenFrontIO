@@ -1,14 +1,10 @@
 import { LitElement, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import newsItems from "resources/news.json";
+import type { NewsItem } from "../../core/ApiSchemas";
+import { getNews } from "../Api";
+import { translateText } from "../Utils";
 
-export interface NewsItem {
-  id: string;
-  title: string;
-  description: string;
-  url?: string;
-  type: "tournament" | "tutorial" | "announcement";
-}
+export type { NewsItem };
 
 const DISMISSED_NEWS_KEY = "dismissedNewsItems";
 const CYCLE_INTERVAL_MS = 5000;
@@ -24,18 +20,22 @@ function getDismissedIds(): Set<string> {
 }
 
 function saveDismissedIds(ids: Set<string>): void {
-  localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([...ids]));
+  try {
+    localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([...ids]));
+  } catch {
+    // Ignore storage errors — dismiss still works for this session
+  }
 }
 
-export function getVisibleNewsItems(): NewsItem[] {
+export function getVisibleNewsItems(items: NewsItem[]): NewsItem[] {
   const dismissed = getDismissedIds();
-  return (newsItems as NewsItem[]).filter((item) => !dismissed.has(item.id));
+  return items.filter((item) => !dismissed.has(item.id));
 }
 
-const typeLabels: Record<NewsItem["type"], string> = {
-  tournament: "TOURNAMENT",
-  tutorial: "TUTORIAL",
-  announcement: "NEWS",
+const typeLabelKeys: Record<NewsItem["type"], string> = {
+  tournament: "news_box.tournament",
+  tutorial: "news_box.tutorial",
+  announcement: "news_box.news",
 };
 
 const typeLabelColors: Record<NewsItem["type"], string> = {
@@ -56,8 +56,28 @@ export class NewsBox extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.items = getVisibleNewsItems();
-    this.startCycle();
+    this.loadNews();
+  }
+
+  private async loadNews() {
+    try {
+      const allItems = await getNews();
+      // Reset stale dismissed list when all items would be hidden
+      const visible = getVisibleNewsItems(allItems);
+      if (visible.length === 0 && allItems.length > 0) {
+        try {
+          localStorage.removeItem(DISMISSED_NEWS_KEY);
+        } catch {
+          // ignore
+        }
+        this.items = allItems;
+      } else {
+        this.items = visible;
+      }
+      this.startCycle();
+    } catch {
+      // Silently fail — component simply won't render
+    }
   }
 
   disconnectedCallback() {
@@ -111,7 +131,7 @@ export class NewsBox extends LitElement {
             class="shrink-0 text-[10px] font-bold tracking-wider px-2 py-0.5 rounded ${typeLabelColors[
               item.type
             ]}"
-            >${typeLabels[item.type]}</span
+            >${translateText(typeLabelKeys[item.type])}</span
           >
           <div class="flex-1 min-w-0">
             ${item.url
@@ -140,7 +160,9 @@ export class NewsBox extends LitElement {
                         this.activeIndex
                           ? "bg-white/60"
                           : "bg-white/20 hover:bg-white/40"}"
-                        aria-label="Go to item ${i + 1}"
+                        aria-label="${translateText("news_box.go_to_item", {
+                          num: i + 1,
+                        })}"
                       ></button>
                     `,
                   )}
@@ -150,7 +172,7 @@ export class NewsBox extends LitElement {
           <button
             @click=${() => this.dismiss(item.id)}
             class="shrink-0 p-0.5 text-white/30 hover:text-white/70 transition-colors"
-            aria-label="Dismiss"
+            aria-label="${translateText("news_box.dismiss")}"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

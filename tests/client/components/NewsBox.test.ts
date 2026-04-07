@@ -5,6 +5,7 @@ import {
 } from "../../../src/client/components/NewsBox";
 
 const DISMISSED_NEWS_KEY = "dismissedNewsItems";
+const allItems = newsItems as NewsItem[];
 
 function createMockLocalStorage(): Storage {
   let store: Record<string, string> = {};
@@ -37,37 +38,37 @@ describe("NewsBox", () => {
 
   describe("getVisibleNewsItems", () => {
     it("returns all items when none are dismissed", () => {
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       expect(items.length).toBe(newsItems.length);
     });
 
     it("filters out dismissed items", () => {
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       const firstId = items[0].id;
       localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([firstId]));
-      const filtered = getVisibleNewsItems();
+      const filtered = getVisibleNewsItems(allItems);
       expect(filtered.find((i) => i.id === firstId)).toBeUndefined();
       expect(filtered.length).toBe(items.length - 1);
     });
 
     it("handles corrupted localStorage gracefully", () => {
       localStorage.setItem(DISMISSED_NEWS_KEY, "not-valid-json");
-      expect(() => getVisibleNewsItems()).not.toThrow();
-      const items = getVisibleNewsItems();
+      expect(() => getVisibleNewsItems(allItems)).not.toThrow();
+      const items = getVisibleNewsItems(allItems);
       expect(items.length).toBe(newsItems.length);
     });
 
     it("returns empty when all items are dismissed", () => {
-      const allIds = (newsItems as NewsItem[]).map((i) => i.id);
+      const allIds = allItems.map((i) => i.id);
       localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify(allIds));
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       expect(items.length).toBe(0);
     });
   });
 
   describe("news items structure", () => {
     it("each item has required fields", () => {
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       for (const item of items) {
         expect(item.id).toBeDefined();
         expect(typeof item.id).toBe("string");
@@ -81,13 +82,13 @@ describe("NewsBox", () => {
     });
 
     it("each item has a unique id", () => {
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       const ids = items.map((i) => i.id);
       expect(new Set(ids).size).toBe(ids.length);
     });
 
     it("contains a tournament entry", () => {
-      const items = getVisibleNewsItems();
+      const items = getVisibleNewsItems(allItems);
       expect(items.some((i) => i.type === "tournament")).toBe(true);
     });
   });

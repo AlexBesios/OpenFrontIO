@@ -191,3 +191,12 @@ export const RankedLeaderboardResponseSchema = z.object({
 export type RankedLeaderboardResponse = z.infer<
   typeof RankedLeaderboardResponseSchema
 >;
+
+export const NewsItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  url: z.string().optional(),
+  type: z.enum(["tournament", "tutorial", "announcement"]),
+});
+export type NewsItem = z.infer<typeof NewsItemSchema>;

@@ -1,6 +1,6 @@
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import "./NewsBox.js";
+import "./NewsBox";
 
 @customElement("play-page")
 export class PlayPage extends LitElement {
@@ -12,7 +12,7 @@ export class PlayPage extends LitElement {
     return html`
       <div
         id="page-play"
-        class="flex flex-col gap-2 w-full px-0 lg:px-4 lg:my-auto min-h-0"
+        class="flex flex-col gap-2 w-full px-0 lg:px-4 min-h-0"
       >
         <token-login class="absolute"></token-login>
 
