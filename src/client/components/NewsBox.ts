@@ -10,21 +10,13 @@ const DISMISSED_NEWS_KEY = "dismissedNewsItems";
 const CYCLE_INTERVAL_MS = 5000;
 
 function getDismissedIds(): Set<string> {
-  try {
-    const raw = localStorage.getItem(DISMISSED_NEWS_KEY);
-    if (raw) return new Set(JSON.parse(raw));
-  } catch (e) {
-    console.error(e);
-  }
+  const raw = localStorage.getItem(DISMISSED_NEWS_KEY);
+  if (raw) return new Set(JSON.parse(raw));
   return new Set();
 }
 
 function saveDismissedIds(ids: Set<string>): void {
-  try {
-    localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([...ids]));
-  } catch (e) {
-    console.error(e);
-  }
+  localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([...ids]));
 }
 
 export function getVisibleNewsItems(items: NewsItem[]): NewsItem[] {
@@ -65,11 +57,7 @@ export class NewsBox extends LitElement {
       // Reset stale dismissed list when all items would be hidden
       const visible = getVisibleNewsItems(allItems);
       if (visible.length === 0 && allItems.length > 0) {
-        try {
-          localStorage.removeItem(DISMISSED_NEWS_KEY);
-        } catch {
-          // ignore
-        }
+        localStorage.removeItem(DISMISSED_NEWS_KEY);
         this.items = allItems;
       } else {
         this.items = visible;
