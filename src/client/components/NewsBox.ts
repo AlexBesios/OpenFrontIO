@@ -75,8 +75,8 @@ export class NewsBox extends LitElement {
         this.items = visible;
       }
       this.startCycle();
-    } catch {
-      // Silently fail — component simply won't render
+    } catch (e) {
+      console.error(e);
     }
   }
 
