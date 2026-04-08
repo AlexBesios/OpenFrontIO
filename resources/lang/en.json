@@ -6,6 +6,7 @@
     "lang_code": "en"
   },
   "common": {
+    "not_logged_in": "Not logged in",
     "close": "Close",
     "copy": "Copy",
     "paste": "Paste",
@@ -350,7 +351,12 @@
     "niledelta": "Nile Delta",
     "arctic": "Arctic",
     "sanfrancisco": "San Francisco",
-    "aegean": "Aegean"
+    "aegean": "Aegean",
+    "milkyway": "Milky Way",
+    "mediterranean": "Mediterranean",
+    "dyslexdria": "Dyslexdria",
+    "greatlakes": "Great Lakes",
+    "straitofmalacca": "Strait Of Malacca"
   },
   "map_categories": {
     "featured": "Featured",
@@ -606,7 +612,7 @@
     "attack_ratio_down": "Decrease Attack Ratio",
     "attack_ratio_down_desc": "Decrease attack ratio by {amount}%",
     "attack_ratio_increment_label": "Attack Ratio Keybind Increment",
-    "attack_ratio_increment_desc": "How much the attack ratio keybinds change per press.",
+    "attack_ratio_increment_desc": "How much the attack ratio keybinds change per press/scroll.",
     "attack_keybinds": "Attack Keybinds",
     "boat_attack": "Boat Attack",
     "boat_attack_desc": "Send a boat attack to the tile under your cursor.",
@@ -940,15 +946,22 @@
   "territory_patterns": {
     "title": "Skins",
     "purchase": "Purchase",
-    "not_logged_in": "Not logged in",
     "pattern": {
       "default": "Default"
     },
     "select_skin": "Select Skin",
-    "selected": "selected"
+    "selected": "selected",
+    "search": "Search..."
   },
   "cosmetics": {
-    "artist_label": "Artist:"
+    "artist_label": "Artist:",
+    "color_label": "Color:",
+    "common": "Common",
+    "uncommon": "Uncommon",
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary",
+    "adfree": "ad-free for life!"
   },
   "flag_input": {
     "title": "Select Flag",
@@ -1019,6 +1032,8 @@
     "public": "Public",
     "private": "Private",
     "solo": "Solo",
+    "ranked": "Ranked",
+    "ranked_1v1": "1v1",
     "mode": "Mode",
     "stats_wins": "Wins",
     "stats_losses": "Losses",

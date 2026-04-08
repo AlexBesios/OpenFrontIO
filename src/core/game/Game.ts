@@ -143,6 +143,11 @@ export enum GameMapType {
   Arctic = "Arctic",
   SanFrancisco = "San Francisco",
   Aegean = "Aegean",
+  MilkyWay = "MilkyWay",
+  Mediterranean = "Mediterranean",
+  Dyslexdria = "Dyslexdria",
+  GreatLakes = "Great Lakes",
+  StraitOfMalacca = "Strait Of Malacca",
 }
 
 export type GameMapName = keyof typeof GameMapType;
@@ -194,6 +199,9 @@ export const mapCategories: Record<string, GameMapType[]> = {
     GameMapType.Arctic,
     GameMapType.SanFrancisco,
     GameMapType.Aegean,
+    GameMapType.Mediterranean,
+    GameMapType.GreatLakes,
+    GameMapType.StraitOfMalacca,
   ],
   fantasy: [
     GameMapType.Pangaea,
@@ -207,6 +215,8 @@ export const mapCategories: Record<string, GameMapType[]> = {
     GameMapType.Surrounded,
     GameMapType.TradersDream,
     GameMapType.Passage,
+    GameMapType.MilkyWay,
+    GameMapType.Dyslexdria,
   ],
   arcade: [
     GameMapType.TheBox,

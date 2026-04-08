@@ -10,6 +10,7 @@ import { fetchCosmetics, flagRelationship } from "./Cosmetics";
 import { translateText } from "./Utils";
 import { BaseModal } from "./components/BaseModal";
 import "./components/FlagButton";
+import "./components/NotLoggedInWarning";
 import { modalHeader } from "./components/ui/ModalHeader";
 
 @customElement("flag-input-modal")
@@ -40,12 +41,7 @@ export class FlagInputModal extends BaseModal {
       .map(
         ([key, flag]) => html`
           <flag-button
-            .flag=${{
-              key: `flag:${key}`,
-              name: flag.name,
-              url: flag.url,
-              artist: flag.artist,
-            }}
+            .flag=${{ ...flag, key: `flag:${key}` }}
             .selected=${selectedFlag === `flag:${key}`}
             .onSelect=${onSelect}
           ></flag-button>
@@ -87,7 +83,7 @@ export class FlagInputModal extends BaseModal {
 
     return html`
       <div
-        class="pt-1 flex flex-wrap gap-1.5 justify-center items-stretch content-start"
+        class="flex flex-wrap gap-4 p-8 justify-center items-stretch content-start"
       >
         ${noFlag} ${cosmeticFlags} ${countryFlags}
       </div>
@@ -104,6 +100,7 @@ export class FlagInputModal extends BaseModal {
             title: translateText("flag_input.title"),
             onBack: () => this.close(),
             ariaLabel: translateText("common.back"),
+            rightContent: html`<not-logged-in-warning></not-logged-in-warning>`,
           })}
 
           <div class="md:flex items-center gap-2 justify-center mt-4">
@@ -118,6 +115,17 @@ export class FlagInputModal extends BaseModal {
               @keyup=${this.handleSearch}
             />
           </div>
+        </div>
+        <div class="flex justify-center py-3 shrink-0">
+          <button
+            class="px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition-colors"
+            @click=${() => {
+              this.close();
+              window.showPage?.("page-item-store");
+            }}
+          >
+            ${translateText("main.store")}
+          </button>
         </div>
 
         <div

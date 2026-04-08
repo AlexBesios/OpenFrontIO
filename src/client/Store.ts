@@ -3,11 +3,15 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { UserMeResponse } from "../core/ApiSchemas";
 import { ColorPalette, Cosmetics, Pattern } from "../core/CosmeticSchemas";
-import { UserSettings } from "../core/game/UserSettings";
+import {
+  PATTERN_KEY,
+  USER_SETTINGS_CHANGED_EVENT,
+  UserSettings,
+} from "../core/game/UserSettings";
 import { PlayerPattern } from "../core/Schemas";
-import { hasLinkedAccount } from "./Api";
 import { BaseModal } from "./components/BaseModal";
 import "./components/FlagButton";
+import "./components/NotLoggedInWarning";
 import "./components/PatternButton";
 import { modalHeader } from "./components/ui/ModalHeader";
 import {
@@ -45,7 +49,7 @@ export class StoreModal extends BaseModal {
       },
     );
     window.addEventListener(
-      "event:user-settings-changed:pattern",
+      `${USER_SETTINGS_CHANGED_EVENT}:${PATTERN_KEY}`,
       this._onPatternSelected,
     );
   }
@@ -53,7 +57,7 @@ export class StoreModal extends BaseModal {
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener(
-      "event:user-settings-changed:pattern",
+      `${USER_SETTINGS_CHANGED_EVENT}:${PATTERN_KEY}`,
       this._onPatternSelected,
     );
   }
@@ -77,11 +81,7 @@ export class StoreModal extends BaseModal {
         title: translateText("store.title"),
         onBack: () => this.close(),
         ariaLabel: translateText("common.back"),
-        rightContent: !hasLinkedAccount(this.userMeResponse)
-          ? html`<div class="flex items-center">
-              ${this.renderNotLoggedInWarning()}
-            </div>`
-          : undefined,
+        rightContent: html`<not-logged-in-warning></not-logged-in-warning>`,
       })}
       <div class="flex items-center gap-2 justify-center pt-2">
         <button
@@ -163,7 +163,7 @@ export class StoreModal extends BaseModal {
 
     return html`
       <div
-        class="flex flex-wrap gap-4 p-2 justify-center items-stretch content-start"
+        class="flex flex-wrap gap-4 p-8 justify-center items-stretch content-start"
       >
         ${buttons}
       </div>
@@ -183,13 +183,7 @@ export class StoreModal extends BaseModal {
       const selectedFlag = new UserSettings().getFlag() ?? "";
       buttons.push(html`
         <flag-button
-          .flag=${{
-            key: `flag:${key}`,
-            name: flag.name,
-            url: flag.url,
-            product: flag.product,
-            artist: flag.artist,
-          }}
+          .flag=${{ ...flag, key: `flag:${key}` }}
           .selected=${selectedFlag === `flag:${key}`}
           .requiresPurchase=${rel === "purchasable"}
           .onPurchase=${() => handlePurchase(flag.product!)}
@@ -207,23 +201,11 @@ export class StoreModal extends BaseModal {
 
     return html`
       <div
-        class="flex flex-wrap gap-4 p-2 justify-center items-stretch content-start"
+        class="flex flex-wrap gap-4 p-8 justify-center items-stretch content-start"
       >
         ${buttons}
       </div>
     `;
-  }
-
-  private renderNotLoggedInWarning(): TemplateResult {
-    return html`<button
-      class="px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors duration-200 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 cursor-pointer hover:bg-red-500/30"
-      @click=${() => {
-        this.close();
-        window.showPage?.("page-account");
-      }}
-    >
-      ${translateText("territory_patterns.not_logged_in")}
-    </button>`;
   }
 
   render() {
