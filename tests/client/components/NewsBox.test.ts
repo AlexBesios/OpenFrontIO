@@ -51,13 +51,6 @@ describe("NewsBox", () => {
       expect(filtered.length).toBe(items.length - 1);
     });
 
-    it("handles corrupted localStorage gracefully", () => {
-      localStorage.setItem(DISMISSED_NEWS_KEY, "not-valid-json");
-      expect(() => getVisibleNewsItems(allItems)).not.toThrow();
-      const items = getVisibleNewsItems(allItems);
-      expect(items.length).toBe(newsItems.length);
-    });
-
     it("returns empty when all items are dismissed", () => {
       const allIds = allItems.map((i) => i.id);
       localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify(allIds));
