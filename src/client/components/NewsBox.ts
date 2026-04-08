@@ -13,8 +13,8 @@ function getDismissedIds(): Set<string> {
   try {
     const raw = localStorage.getItem(DISMISSED_NEWS_KEY);
     if (raw) return new Set(JSON.parse(raw));
-  } catch {
-    // Ignore parse errors
+  } catch (e) {
+    console.error(e);
   }
   return new Set();
 }
@@ -22,8 +22,8 @@ function getDismissedIds(): Set<string> {
 function saveDismissedIds(ids: Set<string>): void {
   try {
     localStorage.setItem(DISMISSED_NEWS_KEY, JSON.stringify([...ids]));
-  } catch {
-    // Ignore storage errors — dismiss still works for this session
+  } catch (e) {
+    console.error(e);
   }
 }
 
