@@ -196,7 +196,7 @@ export const NewsItemSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  url: z.string().optional(),
+  url: z.string().nullable().optional(),
   type: z.enum(["tournament", "tutorial", "announcement"]),
 });
 export type NewsItem = z.infer<typeof NewsItemSchema>;

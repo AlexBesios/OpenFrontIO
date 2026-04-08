@@ -269,7 +269,7 @@ export async function fetchPlayerLeaderboard(
 
 export async function getNews(): Promise<NewsItem[]> {
   try {
-    const res = await fetch(`${getApiBase()}/news`, {
+    const res = await fetch(`${getApiBase()}/news.json`, {
       headers: { Accept: "application/json" },
     });
     if (res.status !== 200) {
